@@ -33,7 +33,7 @@ async def run_ble(data, logger):
             f'✅ Connected: {client.is_connected}; MTU: {client.mtu_size}')
         chunk_size = client.mtu_size - 3
         logger.info(
-            f'⏳ Sending {len(data)} bytes of data in chunks of {chunk_size}...')
+            f'⏳ Sending {len(data)} bytes of data in chunks of {chunk_size} bytes...')
         for i, chunk in enumerate(chunkify(data, chunk_size)):
             await client.write_gatt_char(TX_CHARACTERISTIC_UUID, chunk)
         logger.info(f'✅ Done')
