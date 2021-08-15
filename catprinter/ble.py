@@ -5,6 +5,11 @@ TX_CHARACTERISTIC_UUID = '0000ae01-0000-1000-8000-00805f9b34fb'
 
 SCAN_TIMEOUT_S = 10
 
+# This is a hacky solution so we don't terminate the BLE connection to the printer
+# while it's still printing. A better solution is to subscribe to the RX characteristic
+# and listen for printer events, so we know exactly when the printing is finished.
+WAIT_AFTER_DATA_SENT_S = 30
+
 
 async def scan(name, timeout, logger):
     logger.info(f'⏳ Looking for a BLE device named {name}...')
@@ -36,5 +41,5 @@ async def run_ble(data, logger):
             f'⏳ Sending {len(data)} bytes of data in chunks of {chunk_size} bytes...')
         for i, chunk in enumerate(chunkify(data, chunk_size)):
             await client.write_gatt_char(TX_CHARACTERISTIC_UUID, chunk)
-        logger.info(f'✅ Done')
-        await asyncio.sleep(5)
+        logger.info(f'✅ Done.')
+        await asyncio.sleep(WAIT_AFTER_DATA_SENT_S)

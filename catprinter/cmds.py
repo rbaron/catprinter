@@ -109,16 +109,47 @@ def run_length_encode(img_row):
     return res
 
 
+def byte_encode(img_row):
+    def bit_encode(chunk_start, bit_index):
+        return 1 << bit_index if img_row[chunk_start + bit_index] else 0
+
+    res = []
+    for chunk_start in range(0, len(img_row), 8):
+        byte = 0
+        for bit_index in range(8):
+            byte |= bit_encode(chunk_start, bit_index)
+        res.append(byte)
+    return res
+
+
 def cmd_print_row(img_row):
-    img = run_length_encode(img_row)
+    # Try to use run-length compression on the image data.
+    encoded_img = run_length_encode(img_row)
+
+    # If the resulting compression takes more than PRINT_WIDTH // 8, it means
+    # it's not worth it. So we fallback to a simpler, fixed-length encoding.
+    if len(encoded_img) > PRINT_WIDTH // 8:
+        encoded_img = byte_encode(img_row)
+        b_arr = bs([
+            81,
+            120,
+            -94,
+            0,
+            len(encoded_img),
+            0] + encoded_img + [0, 0])
+        b_arr[-2] = chk_sum(b_arr, 6, len(encoded_img))
+        b_arr[-1] = 0xff
+        return b_arr
+
+    # Build the run-length encoded image command.
     b_arr = bs([
         81,
         120,
         -65,
         0,
-        len(img),
-        0] + img + [0, 0])
-    b_arr[-2] = chk_sum(b_arr, 6, len(img))
+        len(encoded_img),
+        0] + encoded_img + [0, 0])
+    b_arr[-2] = chk_sum(b_arr, 6, len(encoded_img))
     b_arr[-1] = 0xff
     return b_arr
 
