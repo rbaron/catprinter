@@ -5,7 +5,7 @@ bleak==0.12.1
 decorator==5.0.9
 jedi==0.18.0
 matplotlib-inline==0.1.2
-numpy==1.21.1
+numpy==1.21.2
 opencv-contrib-python==4.5.3.56
 parso==0.8.2
 pexpect==4.8.0
