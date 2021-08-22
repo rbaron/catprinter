@@ -19,7 +19,7 @@ $ pip install -r requirements.txt
 # Usage
 ```bash
 $ python print.py --help
-usage: print.py [-h] [--log-level {debug,info,warn,error}] [--img-binarization-algo {mean-threshold,floyd-steinberg}] [--show-preview] filename
+usage: print.py [-h] [--devicename] [--log-level {debug,info,warn,error}] [--img-binarization-algo {mean-threshold,floyd-steinberg}] [--show-preview] filename
 
 prints an image on your cat thermal printer
 
@@ -28,6 +28,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  --devicename          Specify the Bluetooth device name to search for. Default value is GT01.
   --log-level {debug,info,warn,error}
   --img-binarization-algo {mean-threshold,floyd-steinberg}
                         Which image binarization algorithm to use.
