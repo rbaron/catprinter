@@ -30,8 +30,8 @@ def chunkify(data, chunk_size):
     )
 
 
-async def run_ble(data, logger):
-    address = await scan('GT01', SCAN_TIMEOUT_S, logger)
+async def run_ble(data, devicename, logger):
+    address = await scan(devicename, SCAN_TIMEOUT_S, logger)
     logger.info(f'⏳ Connecting to {address}...')
     async with BleakClient(address) as client:
         logger.info(
