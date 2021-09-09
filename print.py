@@ -19,6 +19,8 @@ def parse_args():
                       help='Which image binarization algorithm to use.')
     args.add_argument('--show-preview', action='store_true',
                       help='If set, displays the final image and asks the user for confirmation before printing.')
+    args.add_argument('--devicename', type=str, default='GT01',
+                      help='Specify the Bluetooth device name to search for. Default value is GT01.')
     return args.parse_args()
 
 
@@ -48,7 +50,7 @@ def main():
     logger.info(f'✅ Generated BLE commands: {len(data)} bytes')
 
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(run_ble(data, logger))
+    loop.run_until_complete(run_ble(data, args.devicename, logger))
 
 
 if __name__ == '__main__':
