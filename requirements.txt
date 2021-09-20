@@ -10,7 +10,7 @@ opencv-contrib-python==4.5.3.56
 parso==0.8.2
 pexpect==4.8.0
 pickleshare==0.7.5
-prompt-toolkit==3.0.19
+prompt-toolkit==3.0.20
 ptyprocess==0.7.0
 pycodestyle==2.7.0
 Pygments==2.10.0
