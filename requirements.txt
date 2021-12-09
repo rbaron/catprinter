@@ -13,11 +13,11 @@ pickleshare==0.7.5
 prompt-toolkit==3.0.20
 ptyprocess==0.7.0
 pycodestyle==2.7.0
-Pygments==2.10.0
-pyobjc-core==7.3
-pyobjc-framework-Cocoa==7.3
-pyobjc-framework-CoreBluetooth==7.3
-pyobjc-framework-libdispatch==7.3
+Pygments==2.9.0
+pyobjc-core==7.3; sys_platform == 'darwin'
+pyobjc-framework-Cocoa==7.3; sys_platform == 'darwin'
+pyobjc-framework-CoreBluetooth==7.3; sys_platform == 'darwin'
+pyobjc-framework-libdispatch==7.3; sys_platform == 'darwin'
 toml==0.10.2
 traitlets==5.1.0
 wcwidth==0.2.5
