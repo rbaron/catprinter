@@ -2,6 +2,7 @@ import argparse
 import asyncio
 import logging
 import sys
+import os
 
 from catprinter.cmds import PRINT_WIDTH, cmds_print_img
 from catprinter.ble import run_ble
@@ -38,6 +39,11 @@ def main():
 
     log_level = getattr(logging, args.log_level.upper())
     logger = make_logger(log_level)
+
+    filename = args.filename
+    if not os.path.exists(filename):
+        logger.info('🛑 File not found. Exiting.')
+        return
 
     bin_img = read_img(args.filename, PRINT_WIDTH,
                        logger, args.img_binarization_algo, args.show_preview)
