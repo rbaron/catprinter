@@ -3,10 +3,13 @@ import asyncio
 import logging
 import sys
 import os
+import numpy as np
 
-from catprinter.cmds import PRINT_WIDTH, cmds_print_img
-from catprinter.ble import run_ble
-from catprinter.img import read_img
+from pricetag_printer.ble import run_ble
+from pricetag_printer.img import read_img
+
+EPD_WIDTH = 250
+EPD_HEIGHT = 128
 
 
 def parse_args():
@@ -45,15 +48,15 @@ def main():
         logger.info('🛑 File not found. Exiting.')
         return
 
-    bin_img = read_img(args.filename, PRINT_WIDTH,
+    bin_img = read_img(args.filename, EPD_HEIGHT,
                        logger, args.img_binarization_algo, args.show_preview)
     if bin_img is None:
         logger.info(f'🛑 No image generated. Exiting.')
         return
 
     logger.info(f'✅ Read image: {bin_img.shape} (h, w) pixels')
-    data = cmds_print_img(bin_img)
-    logger.info(f'✅ Generated BLE commands: {len(data)} bytes')
+
+    data = np.packbits(bin_img)
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run_ble(data, args.devicename, logger))

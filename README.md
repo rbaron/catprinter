@@ -1,14 +1,12 @@
-![Cat Printer](./media/hackoclock.jpg)
+![](media/pricetag-printer.jpg)
 
-Cat printer is a portable thermal printer sold on AliExpress for around $20.
-
-This repository contains Python code for talking to the cat printer over Bluetooth Low Energy (BLE). The code has been reverse engineered from the [official Android app](https://play.google.com/store/apps/details?id=com.frogtosea.iprint&hl=en_US&gl=US).
+This repository contains Python code for talking to the [ATC_TLSR_Paper](https://github.com/atc1441/ATC_TLSR_Paper) open-source firmware for the Hanshow e-paper pricetag.
 
 # Installation
 ```bash
 # Clone the repository.
-$ git clone git@github.com:rbaron/catprinter.git
-$ cd catprinter
+$ git clone git@github.com:rbaron/pricetag-printer.git
+$ cd pricetag-printer
 # Create a virtualenv on venv/ and activate it.
 $ virtualenv --python=python3 venv
 $ source venv/bin/activate
@@ -21,7 +19,7 @@ $ pip install -r requirements.txt
 $ python print.py --help
 usage: print.py [-h] [--devicename] [--log-level {debug,info,warn,error}] [--img-binarization-algo {mean-threshold,floyd-steinberg}] [--show-preview] filename
 
-prints an image on your cat thermal printer
+sends an image to the EPD BLE service running in the ATC_TLSR_Paper Hanshow open source firmware.
 
 positional arguments:
   filename

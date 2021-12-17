@@ -62,5 +62,4 @@ def read_img(
             logger.info('🛑 Aborted print.')
             return None
 
-    # Invert the image before returning it.
-    return ~resized
+    return resized
