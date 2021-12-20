@@ -30,7 +30,7 @@ optional arguments:
   -h, --help            show this help message and exit
   --devicename          Specify the Bluetooth device name to search for. Default value is GT01.
   --log-level {debug,info,warn,error}
-  --img-binarization-algo {mean-threshold,floyd-steinberg}
+  --img-binarization-algo {mean-threshold,floyd-steinberg, halftone}
                         Which image binarization algorithm to use.
   --show-preview        If set, displays the final image and asks the user for confirmation before printing.
 ```
@@ -51,3 +51,15 @@ optional arguments:
 ⏳ Sending 2353 bytes of data in chunks of 101 bytes...
 ✅ Done.
 ```
+
+
+# Different Algorithms
+
+Mean Threshold:
+![Mean threshold](./media/grumpy_mean_threshold.png)
+
+Floyd Steinberg (default)
+![Floyd Steinberg](./media/grumpy_floydsteinberg.png)
+
+Halftone dithering
+![Halftone](./media/grumpy_halftone.png)
