@@ -152,13 +152,16 @@ def cmd_print_row(img_row):
     return b_arr
 
 
-def cmds_print_img(img):
+def cmds_print_img(img, dark_mode=False):
+
+    PRINTER_MODE = CMD_PRINT_TEXT if dark_mode else CMD_PRINT_IMG
+
     data = \
         CMD_GET_DEV_STATE + \
         CMD_SET_QUALITY_200_DPI + \
         CMD_LATTICE_START + \
         cmd_set_energy(12000) + \
-        CMD_PRINT_IMG + \
+        PRINTER_MODE + \
         cmd_feed_paper(30)
     for row in img:
         data += cmd_print_row(row)

@@ -23,6 +23,8 @@ def parse_args():
                       help='If set, displays the final image and asks the user for confirmation before printing.')
     args.add_argument('--devicename', type=str, default='GT01',
                       help='Specify the Bluetooth device name to search for. Default value is GT01.')
+    args.add_argument('--darker', action='store_true',
+                      help="Print the image in text mode. This leads to more contrast, but slower speed")
     return args.parse_args()
 
 
@@ -53,7 +55,7 @@ def main():
         return
 
     logger.info(f'✅ Read image: {bin_img.shape} (h, w) pixels')
-    data = cmds_print_img(bin_img)
+    data = cmds_print_img(bin_img, dark_mode=args.darker)
     logger.info(f'✅ Generated BLE commands: {len(data)} bytes')
 
     loop = asyncio.get_event_loop()
