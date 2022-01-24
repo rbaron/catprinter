@@ -14,7 +14,7 @@ prompt-toolkit==3.0.20
 ptyprocess==0.7.0
 pycodestyle==2.7.0
 Pygments==2.9.0
-pyobjc-core==7.3; sys_platform == 'darwin'
+pyobjc-core==8.2; sys_platform == 'darwin'
 pyobjc-framework-Cocoa==7.3; sys_platform == 'darwin'
 pyobjc-framework-CoreBluetooth==7.3; sys_platform == 'darwin'
 pyobjc-framework-libdispatch==7.3; sys_platform == 'darwin'
