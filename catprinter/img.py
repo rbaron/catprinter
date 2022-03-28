@@ -28,7 +28,7 @@ def floyd_steinberg_dither(img):
     return img
 
 
-def halfdone_dither(img):
+def halftone_dither(img):
     '''Applies Haltone dithering using different sized circles
 
     Algorithm is borrowed from https://github.com/GravO8/halftone
@@ -36,10 +36,10 @@ def halfdone_dither(img):
 
     def square_avg_value(square):
         '''
-        Calculates the average grayscale value of the pixels in a square of the 
-        original image 
+        Calculates the average grayscale value of the pixels in a square of the
+        original image
         Argument:
-            square: List of N lists, each with N integers whose value is between 0 
+            square: List of N lists, each with N integers whose value is between 0
             and 255
         '''
         sum = 0
@@ -60,12 +60,12 @@ def halfdone_dither(img):
     assert jump > 0, "jump must be greater than 0"
 
     height_output, width_output = side*ceil(height/jump), side*ceil(width/jump)
-    canvas = np.zeros((height_output, width_output, 3), np.uint8)
-    output_square = np.zeros((side, side, 3), np.uint8)
+    canvas = np.zeros((height_output, width_output), np.uint8)
+    output_square = np.zeros((side, side), np.uint8)
     x_output, y_output = 0, 0
     for y in range(0, height, jump):
         for x in range(0, width, jump):
-            output_square[:] = (255, 255, 255)
+            output_square[:] = 255
             intensity = 1 - square_avg_value(img[y:y+jump, x:x+jump])/255
             radius = int(alpha*intensity*side/2)
             if radius > 0:
@@ -112,7 +112,7 @@ def read_img(
         resized = resized > 127
     elif img_binarization_algo == 'halftone':
         logger.info('⏳ Applying halftone dithering to image...')
-        resized = halfdone_dither(resized)
+        resized = halftone_dither(resized)
         logger.info('✅ Done.')
         resized = resized > 127
     elif img_binarization_algo == 'mean-threshold':
