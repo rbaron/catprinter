@@ -21,11 +21,15 @@ def parse_args():
                       default='floyd-steinberg',
                       help='Which image binarization algorithm to use.')
     args.add_argument('--show-preview', action='store_true',
-                      help='If set, displays the final image and asks the user for confirmation before printing.')
-    args.add_argument('--devicename', type=str, default='GT01',
-                      help='Specify the Bluetooth device name to search for. Default value is GT01.')
+                      help='If set, displays the final image and asks the user \
+                          for confirmation before printing.')
+    args.add_argument('--devicename', type=str, default='',
+                      help='Specify the Bluetooth device name to search for. If \
+                          not specified, the script will try to auto discover the \
+                          printer based on its advertised BLE service UUIDs.')
     args.add_argument('--darker', action='store_true',
-                      help="Print the image in text mode. This leads to more contrast, but slower speed")
+                      help="Print the image in text mode. This leads to more contrast, \
+                          but slower speed")
     return args.parse_args()
 
 
@@ -59,7 +63,9 @@ def main():
     data = cmds_print_img(bin_img, dark_mode=args.darker)
     logger.info(f'✅ Generated BLE commands: {len(data)} bytes')
 
-    asyncio.run(run_ble(data, args.devicename, logger))
+    # Try to autodiscover a printer if --devicename is not specified.
+    autodiscover = not args.devicename
+    asyncio.run(run_ble(data, args.devicename, autodiscover, logger))
 
 
 if __name__ == '__main__':
