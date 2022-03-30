@@ -21,15 +21,17 @@ def parse_args():
                       default='floyd-steinberg',
                       help='Which image binarization algorithm to use.')
     args.add_argument('--show-preview', action='store_true',
-                      help='If set, displays the final image and asks the user \
-                          for confirmation before printing.')
+                      help='If set, displays the final image and asks the user for \
+                          confirmation before printing.')
     args.add_argument('--devicename', type=str, default='',
-                      help='Specify the Bluetooth device name to search for. If \
-                          not specified, the script will try to auto discover the \
-                          printer based on its advertised BLE service UUIDs.')
+                      help='Specify the Bluetooth Low Energy (BLE) device name to    \
+                          search for. If not specified, the script will try to       \
+                          auto discover the printer based on its advertised BLE      \
+                          service UUIDs. Common names are similar to "GT01", "GB02", \
+                          "GB03".')
     args.add_argument('--darker', action='store_true',
                       help="Print the image in text mode. This leads to more contrast, \
-                          but slower speed")
+                          but slower speed.")
     return args.parse_args()
 
 
