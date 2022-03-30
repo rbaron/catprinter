@@ -19,20 +19,26 @@ $ pip install -r requirements.txt
 # Usage
 ```bash
 $ python print.py --help
-usage: print.py [-h] [--devicename] [--log-level {debug,info,warn,error}] [--img-binarization-algo {mean-threshold,floyd-steinberg}] [--show-preview] filename
+usage: print.py [-h] [--log-level {debug,info,warn,error}] [--img-binarization-algo {mean-threshold,floyd-steinberg,halftone}]
+                [--show-preview] [--devicename DEVICENAME] [--darker]
+                filename
 
 prints an image on your cat thermal printer
 
 positional arguments:
   filename
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  --devicename          Specify the Bluetooth device name to search for. Default value is GT01.
   --log-level {debug,info,warn,error}
-  --img-binarization-algo {mean-threshold,floyd-steinberg, halftone}
+  --img-binarization-algo {mean-threshold,floyd-steinberg,halftone}
                         Which image binarization algorithm to use.
   --show-preview        If set, displays the final image and asks the user for confirmation before printing.
+  --devicename DEVICENAME
+                        Specify the Bluetooth Low Energy (BLE) device name to search for. If not specified, the script will try to
+                        auto discover the printer based on its advertised BLE service UUIDs. Common names are similar to "GT01",
+                        "GB02", "GB03".
+  --darker              Print the image in text mode. This leads to more contrast, but slower speed.
 ```
 
 # Example

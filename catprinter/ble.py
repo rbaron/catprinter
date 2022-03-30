@@ -1,6 +1,9 @@
 import asyncio
 from bleak import BleakClient, BleakError, BleakScanner
+from bleak.backends.scanner import AdvertisementData
+from bleak.backends.device import BLEDevice
 
+TX_SERVICE_UUID = '0000af30-0000-1000-8000-00805f9b34fb'
 TX_CHARACTERISTIC_UUID = '0000ae01-0000-1000-8000-00805f9b34fb'
 
 SCAN_TIMEOUT_S = 10
@@ -11,11 +14,20 @@ SCAN_TIMEOUT_S = 10
 WAIT_AFTER_DATA_SENT_S = 30
 
 
-async def scan(name, timeout, logger):
-    logger.info(f'⏳ Looking for a BLE device named {name}...')
+async def scan(name, timeout, autodiscover, logger):
+    if autodiscover:
+        logger.info(f'⏳ Trying to auto-discover a printer...')
+    else:
+        logger.info(f'⏳ Looking for a BLE device named {name}...')
+
+    def filter_fn(device: BLEDevice, adv_data: AdvertisementData):
+        if autodiscover:
+            return TX_SERVICE_UUID in adv_data.service_uuids
+        else:
+            return device.name == name
+
     device = await BleakScanner.find_device_by_filter(
-        lambda d, ad: d.name and d.name == name,
-        timeout=timeout,
+        filter_fn, timeout=timeout,
     )
     if device is None:
         logger.error(f'🛑 Unable to find printerAdMake sure it is turned on')
@@ -30,8 +42,8 @@ def chunkify(data, chunk_size):
     )
 
 
-async def run_ble(data, devicename, logger):
-    address = await scan(devicename, SCAN_TIMEOUT_S, logger)
+async def run_ble(data, devicename, autodiscover, logger):
+    address = await scan(devicename, SCAN_TIMEOUT_S, autodiscover, logger)
     logger.info(f'⏳ Connecting to {address}...')
     async with BleakClient(address) as client:
         logger.info(
