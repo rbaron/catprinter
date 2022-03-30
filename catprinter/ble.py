@@ -3,7 +3,14 @@ from bleak import BleakClient, BleakError, BleakScanner
 from bleak.backends.scanner import AdvertisementData
 from bleak.backends.device import BLEDevice
 
-TX_SERVICE_UUID = '0000af30-0000-1000-8000-00805f9b34fb'
+# For some reason, bleak reports the 0xaf30 service on my macOS, while it reports
+# 0xae30 (which I believe is correct) on my Raspberry Pi. This hacky workaround
+# should cover both cases.
+POSSIBLE_SERVICE_UUIDS = [
+    '0000ae30-0000-1000-8000-00805f9b34fb',
+    '0000af30-0000-1000-8000-00805f9b34fb',
+]
+
 TX_CHARACTERISTIC_UUID = '0000ae01-0000-1000-8000-00805f9b34fb'
 
 SCAN_TIMEOUT_S = 10
@@ -22,7 +29,8 @@ async def scan(name, timeout, autodiscover, logger):
 
     def filter_fn(device: BLEDevice, adv_data: AdvertisementData):
         if autodiscover:
-            return TX_SERVICE_UUID in adv_data.service_uuids
+            return any(uuid in adv_data.service_uuids
+                       for uuid in POSSIBLE_SERVICE_UUIDS)
         else:
             return device.name == name
 
