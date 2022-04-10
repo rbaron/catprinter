@@ -122,9 +122,9 @@ def read_img(
             resized = im > 127
         else:
             logger.error(
-            f'🛑 Wrong width of {img_binarization_algo} px. {print_width} required')
+            f'🛑 Wrong width of {width} px. {print_width} required')
             raise RuntimeError(
-            f'Wrong width of {img_binarization_algo} px. {print_width} required')
+            f'Wrong width of {width} px. {print_width} required')
 
     else:
         logger.error(
