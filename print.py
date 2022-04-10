@@ -17,7 +17,7 @@ def parse_args():
                       choices=['debug', 'info', 'warn', 'error'], default='info')
     args.add_argument('--img-binarization-algo', type=str,
                       choices=['mean-threshold',
-                               'floyd-steinberg', 'halftone'],
+                               'floyd-steinberg', 'halftone', 'none'],
                       default='floyd-steinberg',
                       help='Which image binarization algorithm to use.')
     args.add_argument('--show-preview', action='store_true',

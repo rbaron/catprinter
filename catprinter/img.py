@@ -117,6 +117,15 @@ def read_img(
         resized = resized > 127
     elif img_binarization_algo == 'mean-threshold':
         resized = resized > resized.mean()
+    elif img_binarization_algo == 'none':
+        if width == print_width:
+            resized = im > 127
+        else:
+            logger.error(
+            f'🛑 Wrong width of {img_binarization_algo} px. {print_width} required')
+            raise RuntimeError(
+            f'Wrong width of {img_binarization_algo} px. {print_width} required')
+
     else:
         logger.error(
             f'🛑 Unknown image binarization algorithm: {img_binarization_algo}')
