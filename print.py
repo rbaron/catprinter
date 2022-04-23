@@ -68,6 +68,7 @@ def main():
 
     # Try to autodiscover a printer if --devicename is not specified.
     autodiscover = not args.devicename
+
     asyncio.run(ble.run_ble(data, args.devicename, autodiscover, logger))
 
 

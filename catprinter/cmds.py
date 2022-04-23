@@ -1,6 +1,8 @@
 
 PRINT_WIDTH = 384
 
+# How much extra paper to feed in order to clear the catprinter's enclosure.
+POST_PRINT_FEED_LENGTH = 25
 
 def to_unsigned_byte(val):
     '''Converts a byte in signed representation to unsigned. Assumes val is encoded in two's
@@ -167,9 +169,11 @@ def cmd_print_row(img_row):
     return b_arr
 
 
-def cmds_print_img(img, dark_mode=False):
+def cmds_print_img(img: bytes, dark_mode: bool=False) -> bytearray:
+    """Given the `img` this wraps it in a payload the catprinter understands."""
 
-    PRINTER_MODE = CMD_PRINT_TEXT if dark_mode else CMD_PRINT_IMG
+    # Not sure what the intent was, but commenting out as its not used.
+    # PRINTER_MODE = CMD_PRINT_TEXT if dark_mode else CMD_PRINT_IMG
 
     data = \
         CMD_GET_DEV_STATE + \
@@ -185,3 +189,5 @@ def cmds_print_img(img, dark_mode=False):
         CMD_LATTICE_END + \
         CMD_GET_DEV_STATE
     return data
+
+

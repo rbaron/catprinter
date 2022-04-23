@@ -1,5 +1,6 @@
-import cv2
 from math import ceil
+
+import cv2
 import numpy as np
 
 from catprinter import logger
