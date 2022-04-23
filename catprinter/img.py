@@ -1,3 +1,4 @@
+import io
 from math import ceil
 
 import cv2
@@ -91,11 +92,15 @@ def halftone_dither(img):
 
 
 def read_img(
-    filename,
-    print_width,
-    img_binarization_algo,
-):
-    im = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+        file: io.BytesIO,
+        print_width,
+        logger,
+        img_binarization_algo,
+    ):
+    """Takes `file` and rescales/converts image to be just right for the
+    catprinter. This returns `bytes`, ready to transmit to the printer."""
+    img_as_array = np.asarray(file, dtype="uint8")
+    im = cv2.imdecode(img_as_array, cv2.IMREAD_GRAYSCALE)
     height = im.shape[0]
     width = im.shape[1]
     factor = print_width / width

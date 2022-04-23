@@ -189,5 +189,3 @@ def cmds_print_img(img: bytes, dark_mode: bool=False) -> bytearray:
         CMD_LATTICE_END + \
         CMD_GET_DEV_STATE
     return data
-
-
