@@ -105,19 +105,19 @@ def read_img(
         ),
         interpolation=cv2.INTER_AREA)
 
-    if img_binarization_algo.startswith('f'):
+    if img_binarization_algo == 'floyd-steinberg':
         logger.info('⏳ Applying Floyd-Steinberg dithering to image...')
         resized = floyd_steinberg_dither(resized)
         logger.info('✅ Done.')
         resized = resized > 127
-    elif img_binarization_algo.startswith('h'):
+    elif img_binarization_algo == 'halftone':
         logger.info('⏳ Applying halftone dithering to image...')
         resized = halftone_dither(resized)
         logger.info('✅ Done.')
         resized = resized > 127
-    elif img_binarization_algo.startswith('m'):
+    elif img_binarization_algo == 'mean-threshold':
         resized = resized > resized.mean()
-    elif img_binarization_algo.startswith('n'):
+    elif img_binarization_algo == 'none':
         if width == print_width:
             resized = im > 127
         else:

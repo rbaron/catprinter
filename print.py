@@ -8,13 +8,6 @@ from catprinter.cmds import PRINT_WIDTH, cmds_print_img
 from catprinter.ble import run_ble
 from catprinter.img import read_img
 
-class prefixchoice(list):
-    def __contains__(self, other):
-        for i in self:
-            if i.startswith(other):
-                return True
-        return False
-
 def parse_args():
     args = argparse.ArgumentParser(
         description='prints an image on your cat thermal printer')
@@ -22,10 +15,12 @@ def parse_args():
     args.add_argument('-l', '--log-level', type=str,
                       choices=['debug', 'info', 'warn', 'error'], default='info')
     args.add_argument('-b', '--img-binarization-algo', type=str,
-                      choices=prefixchoice(['mean-threshold',
-                               'floyd-steinberg', 'halftone', 'none']),
+                      choices=['mean-threshold',
+                               'floyd-steinberg', 'halftone', 'none'],
                       default='floyd-steinberg',
-                      help=f'Which image binarization algorithm to use. If \'none\' is used, no binarization will be used. In this case the image has to have a width of {PRINT_WIDTH} px.')
+                      help=f'Which image binarization algorithm to use. If \'none\'  \
+                             is used, no binarization will be used. In this case the \
+                             image has to have a width of {PRINT_WIDTH} px.')
     args.add_argument('-s', '--show-preview', action='store_true',
                       help='If set, displays the final image and asks the user for \
                           confirmation before printing.')
