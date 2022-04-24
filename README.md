@@ -18,7 +18,7 @@ $ pip install -r requirements.txt
 
 # Usage
 ```bash
-$ python print.py --help
+$ ./print.py --help
 usage: print.py [-h] [--log-level {debug,info,warn,error}] [--img-binarization-algo {mean-threshold,floyd-steinberg,halftone}]
                 [--show-preview] [--devicename DEVICENAME] [--darker]
                 filename
@@ -43,7 +43,7 @@ options:
 
 # Example
 ```bash
-% python print.py --show-preview test.png
+% ./print.py --show-preview test.png
 ⏳ Applying Floyd-Steinberg dithering to image...
 ✅ Done.
 ℹ️ Displaying preview.
