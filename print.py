@@ -5,9 +5,10 @@ import logging
 import sys
 import os
 
+from catprinter import logger
 from catprinter.cmds import PRINT_WIDTH, cmds_print_img
 from catprinter.ble import run_ble
-from catprinter.img import read_img
+from catprinter.img import read_img, show_preview
 
 def parse_args():
     args = argparse.ArgumentParser(
@@ -37,30 +38,34 @@ def parse_args():
     return args.parse_args()
 
 
-def make_logger(log_level):
-    logger = logging.getLogger('catprinter')
+def configure_logger(log_level):
     logger.setLevel(log_level)
     h = logging.StreamHandler(sys.stdout)
     h.setLevel(log_level)
     logger.addHandler(h)
-    return logger
 
 
 def main():
     args = parse_args()
 
     log_level = getattr(logging, args.log_level.upper())
-    logger = make_logger(log_level)
+    configure_logger(log_level)
 
     filename = args.filename
     if not os.path.exists(filename):
         logger.info('🛑 File not found. Exiting.')
         return
 
-    bin_img = read_img(args.filename, PRINT_WIDTH,
-                       logger, args.img_binarization_algo, args.show_preview)
-    if bin_img is None:
-        logger.info(f'🛑 No image generated. Exiting.')
+    try:
+        bin_img = read_img(
+            args.filename,
+            PRINT_WIDTH,
+            args.img_binarization_algo,
+        )
+        if args.show_preview:
+            show_preview(bin_img)
+    except RuntimeError as e:
+        logger.error(f'🛑 {e}')
         return
 
     logger.info(f'✅ Read image: {bin_img.shape} (h, w) pixels')
@@ -69,7 +74,7 @@ def main():
 
     # Try to autodiscover a printer if --devicename is not specified.
     autodiscover = not args.devicename
-    asyncio.run(run_ble(data, args.devicename, autodiscover, logger))
+    asyncio.run(run_ble(data, args.devicename, autodiscover))
 
 
 if __name__ == '__main__':
