@@ -121,16 +121,17 @@ def read_img(
         if width == print_width:
             resized = im > 127
         else:
-            logger.error(
-            f'🛑 Wrong width of {width} px. An image with a width of {print_width} px is required for "none" binarization')
             raise RuntimeError(
-            f'Wrong width of {width} px. An image with a width of {print_width} px is required for "none" binarization')
+                f'Wrong width of {width} px. '
+                f'An image with a width of {print_width} px '
+                f'is required for "none" binarization'
+            )
 
     else:
-        logger.error(
-            f'🛑 Unknown image binarization algorithm: {img_binarization_algo}')
         raise RuntimeError(
-            f'unknown image binarization algorithm: {img_binarization_algo}')
+            f'unknown image binarization algorithm: '
+            f'{img_binarization_algo}'
+        )
 
     if show_preview:
         # Convert from our boolean representation to float.
@@ -140,8 +141,7 @@ def read_img(
         # Calling waitKey(1) tells OpenCV to process its GUI events and actually display our image.
         cv2.waitKey(1)
         if input('🤔 Go ahead with print? [Y/n]? ').lower() == 'n':
-            logger.info('🛑 Aborted print.')
-            return None
+            raise RuntimeError('Aborted print.')
 
     # Invert the image before returning it.
     return ~resized

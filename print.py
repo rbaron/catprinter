@@ -57,10 +57,16 @@ def main():
         logger.info('🛑 File not found. Exiting.')
         return
 
-    bin_img = read_img(args.filename, PRINT_WIDTH,
-                       logger, args.img_binarization_algo, args.show_preview)
-    if bin_img is None:
-        logger.info(f'🛑 No image generated. Exiting.')
+    try:
+        bin_img = read_img(
+            args.filename,
+            PRINT_WIDTH,
+            logger,
+            args.img_binarization_algo,
+            args.show_preview,
+        )
+    except RuntimeError as e:
+        logger.error(f'🛑 {e}')
         return
 
     logger.info(f'✅ Read image: {bin_img.shape} (h, w) pixels')
