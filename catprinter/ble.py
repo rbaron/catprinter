@@ -38,8 +38,7 @@ async def scan(name, timeout, autodiscover, logger):
         filter_fn, timeout=timeout,
     )
     if device is None:
-        logger.error(f'🛑 Unable to find printerAdMake sure it is turned on')
-        raise RuntimeError('unable to find printer')
+        raise RuntimeError('Unable to find printer, make sure it is turned on and in range')
     logger.info(f'✅ Got it. Address: {device}')
     return device
 
@@ -51,7 +50,11 @@ def chunkify(data, chunk_size):
 
 
 async def run_ble(data, devicename, autodiscover, logger):
-    address = await scan(devicename, SCAN_TIMEOUT_S, autodiscover, logger)
+    try:
+        address = await scan(devicename, SCAN_TIMEOUT_S, autodiscover, logger)
+    except RuntimeError as e:
+        logger.error(f'🛑 {e}')
+        return
     logger.info(f'⏳ Connecting to {address}...')
     async with BleakClient(address) as client:
         logger.info(
