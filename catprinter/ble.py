@@ -1,5 +1,5 @@
 import asyncio
-from bleak import BleakClient, BleakError, BleakScanner
+from bleak import BleakClient, BleakScanner
 from bleak.backends.scanner import AdvertisementData
 from bleak.backends.device import BLEDevice
 from catprinter import logger
@@ -25,7 +25,7 @@ WAIT_AFTER_DATA_SENT_S = 30
 
 async def scan(name, timeout, autodiscover):
     if autodiscover:
-        logger.info(f'⏳ Trying to auto-discover a printer...')
+        logger.info('⏳ Trying to auto-discover a printer...')
     else:
         logger.info(f'⏳ Looking for a BLE device named {name}...')
 
@@ -66,5 +66,5 @@ async def run_ble(data, devicename, autodiscover):
             f'⏳ Sending {len(data)} bytes of data in chunks of {chunk_size} bytes...')
         for i, chunk in enumerate(chunkify(data, chunk_size)):
             await client.write_gatt_char(TX_CHARACTERISTIC_UUID, chunk)
-        logger.info(f'✅ Done.')
+        logger.info(f'✅ Done. Waiting {WAIT_AFTER_DATA_SENT_S}s before disconnecting...')
         await asyncio.sleep(WAIT_AFTER_DATA_SENT_S)
