@@ -7,7 +7,7 @@ import os
 
 from catprinter.cmds import PRINT_WIDTH, cmds_print_img
 from catprinter.ble import run_ble
-from catprinter.img import read_img
+from catprinter.img import read_img, show_preview
 
 def parse_args():
     args = argparse.ArgumentParser(
@@ -63,8 +63,9 @@ def main():
             PRINT_WIDTH,
             logger,
             args.img_binarization_algo,
-            args.show_preview,
         )
+        if args.show_preview:
+            show_preview(bin_img, logger)
     except RuntimeError as e:
         logger.error(f'🛑 {e}')
         return

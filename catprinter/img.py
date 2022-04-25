@@ -88,11 +88,11 @@ def halftone_dither(img):
 
 
 def read_img(
-        filename,
-        print_width,
-        logger,
-        img_binarization_algo,
-        show_preview):
+    filename,
+    print_width,
+    logger,
+    img_binarization_algo,
+):
     im = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
     height = im.shape[0]
     width = im.shape[1]
@@ -133,15 +133,16 @@ def read_img(
             f'{img_binarization_algo}'
         )
 
-    if show_preview:
-        # Convert from our boolean representation to float.
-        preview_img = resized.astype(float)
-        cv2.imshow('Preview', preview_img)
-        logger.info('ℹ️  Displaying preview.')
-        # Calling waitKey(1) tells OpenCV to process its GUI events and actually display our image.
-        cv2.waitKey(1)
-        if input('🤔 Go ahead with print? [Y/n]? ').lower() == 'n':
-            raise RuntimeError('Aborted print.')
-
     # Invert the image before returning it.
     return ~resized
+
+
+def show_preview(bin_img, logger):
+    # Convert from our boolean representation to float and invert.
+    preview_img = ~bin_img.astype(float)
+    cv2.imshow('Preview', preview_img)
+    logger.info('ℹ️  Displaying preview.')
+    # Calling waitKey(1) tells OpenCV to process its GUI events and actually display our image.
+    cv2.waitKey(1)
+    if input('🤔 Go ahead with print? [Y/n]? ').lower() == 'n':
+        raise RuntimeError('Aborted print.')
