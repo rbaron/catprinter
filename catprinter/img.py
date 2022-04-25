@@ -2,6 +2,8 @@ import cv2
 from math import ceil
 import numpy as np
 
+from catprinter import logger
+
 
 def floyd_steinberg_dither(img):
     '''Applies the Floyd-Steinberf dithering to img, in place.
@@ -90,7 +92,6 @@ def halftone_dither(img):
 def read_img(
     filename,
     print_width,
-    logger,
     img_binarization_algo,
 ):
     im = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
@@ -137,7 +138,7 @@ def read_img(
     return ~resized
 
 
-def show_preview(bin_img, logger):
+def show_preview(bin_img):
     # Convert from our boolean representation to float and invert.
     preview_img = ~bin_img.astype(float)
     cv2.imshow('Preview', preview_img)

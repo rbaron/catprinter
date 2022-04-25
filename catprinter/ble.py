@@ -2,10 +2,12 @@ import asyncio
 from bleak import BleakClient, BleakError, BleakScanner
 from bleak.backends.scanner import AdvertisementData
 from bleak.backends.device import BLEDevice
+from catprinter import logger
 
 # For some reason, bleak reports the 0xaf30 service on my macOS, while it reports
 # 0xae30 (which I believe is correct) on my Raspberry Pi. This hacky workaround
 # should cover both cases.
+
 POSSIBLE_SERVICE_UUIDS = [
     '0000ae30-0000-1000-8000-00805f9b34fb',
     '0000af30-0000-1000-8000-00805f9b34fb',
@@ -21,7 +23,7 @@ SCAN_TIMEOUT_S = 10
 WAIT_AFTER_DATA_SENT_S = 30
 
 
-async def scan(name, timeout, autodiscover, logger):
+async def scan(name, timeout, autodiscover):
     if autodiscover:
         logger.info(f'⏳ Trying to auto-discover a printer...')
     else:
@@ -49,9 +51,9 @@ def chunkify(data, chunk_size):
     )
 
 
-async def run_ble(data, devicename, autodiscover, logger):
+async def run_ble(data, devicename, autodiscover):
     try:
-        address = await scan(devicename, SCAN_TIMEOUT_S, autodiscover, logger)
+        address = await scan(devicename, SCAN_TIMEOUT_S, autodiscover)
     except RuntimeError as e:
         logger.error(f'🛑 {e}')
         return
