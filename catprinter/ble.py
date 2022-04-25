@@ -1,4 +1,6 @@
 import asyncio
+from typing import Optional
+
 from bleak import BleakClient, BleakScanner
 from bleak.backends.scanner import AdvertisementData
 from bleak.backends.device import BLEDevice
@@ -23,7 +25,8 @@ SCAN_TIMEOUT_S = 10
 WAIT_AFTER_DATA_SENT_S = 30
 
 
-async def scan(name, timeout, autodiscover):
+async def scan(name: Optional[str], timeout: int):
+    autodiscover = (not name)
     if autodiscover:
         logger.info('⏳ Trying to auto-discover a printer...')
     else:
@@ -51,9 +54,9 @@ def chunkify(data, chunk_size):
     )
 
 
-async def run_ble(data, devicename, autodiscover):
+async def run_ble(data, devicename: Optional[str]):
     try:
-        address = await scan(devicename, SCAN_TIMEOUT_S, autodiscover)
+        address = await scan(devicename, timeout=SCAN_TIMEOUT_S)
     except RuntimeError as e:
         logger.error(f'🛑 {e}')
         return

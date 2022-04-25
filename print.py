@@ -73,8 +73,7 @@ def main():
     logger.info(f'✅ Generated BLE commands: {len(data)} bytes')
 
     # Try to autodiscover a printer if --devicename is not specified.
-    autodiscover = not args.devicename
-    asyncio.run(run_ble(data, args.devicename, autodiscover))
+    asyncio.run(run_ble(data, devicename=args.devicename))
 
 
 if __name__ == '__main__':
