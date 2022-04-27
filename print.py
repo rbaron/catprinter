@@ -10,6 +10,7 @@ from catprinter.cmds import PRINT_WIDTH, cmds_print_img
 from catprinter.ble import run_ble
 from catprinter.img import read_img, show_preview
 
+
 def parse_args():
     args = argparse.ArgumentParser(
         description='prints an image on your cat thermal printer')
@@ -26,12 +27,14 @@ def parse_args():
     args.add_argument('-s', '--show-preview', action='store_true',
                       help='If set, displays the final image and asks the user for \
                           confirmation before printing.')
-    args.add_argument('-d', '--devicename', type=str, default='',
-                      help='Specify the Bluetooth Low Energy (BLE) device name to    \
-                          search for. If not specified, the script will try to       \
-                          auto discover the printer based on its advertised BLE      \
-                          service UUIDs. Common names are similar to "GT01", "GB02", \
-                          "GB03".')
+    args.add_argument('-d', '--device', type=str, default='',
+                      help=(
+                          'The printer\'s Bluetooth Low Energy (BLE) address '
+                          '(MAC address on Linux; UUID on macOS) '
+                          'or advertisement name (e.g.: "GT01", "GB02", "GB03"). '
+                          'If omitted, the the script will try to auto discover '
+                          'the printer based on its advertised BLE services.'
+                      ))
     args.add_argument('-t', '--darker', action='store_true',
                       help="Print the image in text mode. This leads to more contrast, \
                           but slower speed.")
@@ -72,9 +75,8 @@ def main():
     data = cmds_print_img(bin_img, dark_mode=args.darker)
     logger.info(f'✅ Generated BLE commands: {len(data)} bytes')
 
-    # Try to autodiscover a printer if --devicename is not specified.
-    autodiscover = not args.devicename
-    asyncio.run(run_ble(data, args.devicename, autodiscover))
+    # Try to autodiscover a printer if --device is not specified.
+    asyncio.run(run_ble(data, device=args.device))
 
 
 if __name__ == '__main__':

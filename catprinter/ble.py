@@ -1,4 +1,8 @@
 import asyncio
+import contextlib
+import uuid
+from typing import Optional
+
 from bleak import BleakClient, BleakScanner
 from bleak.backends.scanner import AdvertisementData
 from bleak.backends.device import BLEDevice
@@ -23,7 +27,8 @@ SCAN_TIMEOUT_S = 10
 WAIT_AFTER_DATA_SENT_S = 30
 
 
-async def scan(name, timeout, autodiscover):
+async def scan(name: Optional[str], timeout: int):
+    autodiscover = (not name)
     if autodiscover:
         logger.info('⏳ Trying to auto-discover a printer...')
     else:
@@ -51,9 +56,20 @@ def chunkify(data, chunk_size):
     )
 
 
-async def run_ble(data, devicename, autodiscover):
+async def get_device_address(device: Optional[str]):
+    # See if we were passed a string that smells like an UUID or MAC address.
+    if device:
+        with contextlib.suppress(ValueError):
+            return str(uuid.UUID(device))
+        if device.count(':') == 5 and device.replace(':', '').isalnum():
+            return device
+
+    return await scan(device, timeout=SCAN_TIMEOUT_S)
+
+
+async def run_ble(data, device: Optional[str]):
     try:
-        address = await scan(devicename, SCAN_TIMEOUT_S, autodiscover)
+        address = await get_device_address(device)
     except RuntimeError as e:
         logger.error(f'🛑 {e}')
         return
