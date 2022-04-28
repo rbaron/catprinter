@@ -140,7 +140,7 @@ def read_img(
 
 def show_preview(bin_img):
     # Convert from our boolean representation to float and invert.
-    preview_img = ~bin_img.astype(float)
+    preview_img = (~bin_img).astype(float)
     cv2.imshow('Preview', preview_img)
     logger.info('ℹ️  Displaying preview.')
     # Calling waitKey(1) tells OpenCV to process its GUI events and actually display our image.
