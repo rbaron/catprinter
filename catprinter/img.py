@@ -101,7 +101,7 @@ def read_img(
     resized = cv2.resize(
         im,
         (
-            int(width * factor),
+            print_width,
             int(height * factor)
         ),
         interpolation=cv2.INTER_AREA)
