@@ -1,30 +1,27 @@
 #!/usr/bin/env python
 import argparse
 import asyncio
+import io
 import logging
-import sys
 import os
+import sys
 
-from catprinter import logger
-from catprinter.cmds import PRINT_WIDTH, cmds_print_img
-from catprinter.ble import run_ble
-from catprinter.img import read_img, show_preview
+from catprinter import ble, cmds, img, logger, txt
 
 
 def parse_args():
     args = argparse.ArgumentParser(
         description='prints an image on your cat thermal printer')
-    args.add_argument('filename', type=str)
+    args.add_argument('--filename', type=str, default="", help="Path to image file to print.")
+    args.add_argument('--text', type=str, help="Prints provided text messages. Linebreaks can be added with a newline character \\n Either --filename or --text should be provided, but not both.")
     args.add_argument('-l', '--log-level', type=str,
                       choices=['debug', 'info', 'warn', 'error'], default='info')
     args.add_argument('-b', '--img-binarization-algo', type=str,
                       choices=['mean-threshold',
                                'floyd-steinberg', 'halftone', 'none'],
                       default='floyd-steinberg',
-                      help=f'Which image binarization algorithm to use. If \'none\'  \
-                             is used, no binarization will be used. In this case the \
-                             image has to have a width of {PRINT_WIDTH} px.')
-    args.add_argument('-s', '--show-preview', action='store_true',
+                      help=f'Which image binarization algorithm to use. If \'none\' is used, no binarization will be used. In this case the image has to have a width of {cmds.PRINT_WIDTH} px.')
+    args.add_argument('--show-preview', action='store_true',
                       help='If set, displays the final image and asks the user for \
                           confirmation before printing.')
     args.add_argument('-d', '--device', type=str, default='',
@@ -55,28 +52,48 @@ def main():
     configure_logger(log_level)
 
     filename = args.filename
-    if not os.path.exists(filename):
+    text = args.text
+
+    if not filename and not text:
+        logger.info('🛑 Both a filename and text are missing. Please provide one of these parameters. Exiting')
+        return
+
+    if filename and text:
+        logger.info('🛑 Both a filename and text were provided, only one of these parameters is allowed at a time. Exiting')
+        return
+
+    if not text and not os.path.exists(filename):
         logger.info('🛑 File not found. Exiting.')
         return
 
     try:
-        bin_img = read_img(
-            args.filename,
-            PRINT_WIDTH,
-            args.img_binarization_algo,
-        )
+        bin_img = None
+        if filename:
+            with open(filename, "rb") as f:
+                img_arr = bytearray(f.read())
+                bin_img = img.read_img(img_arr, cmds.PRINT_WIDTH,
+                            logger, args.img_binarization_algo,)
+        elif text:
+            txt_arr = bytearray(txt.text_to_image(text))
+            bin_img = img.read_img(txt_arr, cmds.PRINT_WIDTH,
+                        logger, args.img_binarization_algo,)
+
+        if bin_img is None:
+            logger.info(f'🛑 No image generated. Exiting.')
+            return
+
         if args.show_preview:
-            show_preview(bin_img)
+            img.show_preview(bin_img)
     except RuntimeError as e:
         logger.error(f'🛑 {e}')
         return
 
     logger.info(f'✅ Read image: {bin_img.shape} (h, w) pixels')
-    data = cmds_print_img(bin_img, dark_mode=args.darker)
+    data = cmds.cmds_print_img(bin_img, dark_mode=args.darker)
     logger.info(f'✅ Generated BLE commands: {len(data)} bytes')
 
     # Try to autodiscover a printer if --device is not specified.
-    asyncio.run(run_ble(data, device=args.device))
+    asyncio.run(ble.run_ble(data, device=args.device))
 
 
 if __name__ == '__main__':

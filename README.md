@@ -18,39 +18,32 @@ $ pip install -r requirements.txt
 
 # Usage
 ```bash
-$ ./print.py --help
-usage: print.py [-h] [-l {debug,info,warn,error}]
-                [-b {mean-threshold,floyd-steinberg,halftone,none}] [-s]
-                [-d DEVICE] [-t]
-                filename
+$ python print.py --help
+usage: print.py [-h] [--filename FILENAME] [--text TEXT] [--log-level {debug,info,warn,error}]
+                [--img-binarization-algo {mean-threshold,floyd-steinberg,halftone,none}] [--show-preview]
+                [--devicename DEVICENAME] [--darker]
 
 prints an image on your cat thermal printer
 
-positional arguments:
-  filename
-
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  -l {debug,info,warn,error}, --log-level {debug,info,warn,error}
-  -b {mean-threshold,floyd-steinberg,halftone,none}, --img-binarization-algo {mean-threshold,floyd-steinberg,halftone,none}
-                        Which image binarization algorithm to use. If 'none'
-                        is used, no binarization will be used. In this case
-                        the image has to have a width of 384 px.
-  -s, --show-preview    If set, displays the final image and asks the user for
-                        confirmation before printing.
-  -d DEVICE, --device DEVICE
-                        The printer's Bluetooth Low Energy (BLE) address (MAC
-                        address on Linux; UUID on macOS) or advertisement name
-                        (e.g.: "GT01", "GB02", "GB03"). If omitted, the the
-                        script will try to auto discover the printer based on
-                        its advertised BLE services.
-  -t, --darker          Print the image in text mode. This leads to more
-                        contrast, but slower speed.
+  --filename FILENAME   Path to image file to print.
+  --text TEXT           Prints provided text messages. Either --filename or --text should be provided, but not both.
+  --log-level {debug,info,warn,error}
+  --img-binarization-algo {mean-threshold,floyd-steinberg,halftone,none}
+                        Which image binarization algorithm to use. If 'none' is used, no binarization will be used. In this
+                        case the image has to have a width of 384 px.
+  --show-preview        If set, displays the final image and asks the user for confirmation before printing.
+  --devicename DEVICENAME
+                        Specify the Bluetooth Low Energy (BLE) device name to search for. If not specified, the script will
+                        try to auto discover the printer based on its advertised BLE service UUIDs. Common names are similar
+                        to "GT01", "GB02", "GB03".
+  --darker              Print the image in text mode. This leads to more contrast, but slower speed.
 ```
 
 # Example
 ```bash
-% ./print.py --show-preview test.png
+% python print.py --show-preview --filename test.png
 ⏳ Applying Floyd-Steinberg dithering to image...
 ✅ Done.
 ℹ️ Displaying preview.
