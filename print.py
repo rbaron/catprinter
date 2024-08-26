@@ -19,7 +19,7 @@ def parse_args():
                       choices=['debug', 'info', 'warn', 'error'], default='info')
     args.add_argument('-b', '--img-binarization-algo', type=str,
                       choices=['mean-threshold',
-                               'floyd-steinberg', 'halftone', 'none'],
+                               'floyd-steinberg', 'atkinson', 'halftone', 'none'],
                       default='floyd-steinberg',
                       help=f'Which image binarization algorithm to use. If \'none\'  \
                              is used, no binarization will be used. In this case the \
