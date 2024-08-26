@@ -6,7 +6,7 @@ from catprinter import logger
 
 
 def floyd_steinberg_dither(img):
-    '''Applies the Floyd-Steinberf dithering to img, in place.
+    '''Applies the Floyd-Steinberg dithering to img, in place.
     img is expected to be a 8-bit grayscale image.
 
     Algorithm borrowed from wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering.
@@ -23,15 +23,42 @@ def floyd_steinberg_dither(img):
             new_val = 255 if img[y][x] > 127 else 0
             err = img[y][x] - new_val
             img[y][x] = new_val
-            adjust_pixel(y, x + 1, err * 7/16)
+            adjust_pixel(y, x + 1, err * 1/16)
             adjust_pixel(y + 1, x - 1, err * 3/16)
             adjust_pixel(y + 1, x, err * 5/16)
             adjust_pixel(y + 1, x + 1, err * 1/16)
     return img
 
+def atkinson_dither(img):
+    '''
+    Applies the Atkinson dithering to img, in place.
+    img is expected to be a 8-bit grayscale image.
+
+    Algorithm from https://tannerhelland.com/2012/12/28/dithering-eleven-algorithms-source-code.html
+    '''
+    h, w = img.shape
+
+    def adjust_pixel(y, x, delta):
+        if y < 0 or y >= h or x < 0 or x >= w:
+            return
+        img[y][x] = min(255, max(0, img[y][x] + delta))
+
+    for y in range(h):
+        for x in range(w):
+            new_val = 255 if img[y][x] > 127 else 0
+            err = img[y][x] - new_val
+            img[y][x] = new_val
+            adjust_pixel(y, x + 1, err * 1/8)
+            adjust_pixel(y, x + 2, err * 1/8)
+            adjust_pixel(y + 1, x - 1, err * 1/8)
+            adjust_pixel(y + 1, x, err * 1/8)
+            adjust_pixel(y + 1, x + 1, err * 1/8)
+            adjust_pixel(y + 2, x, err * 1/8)
+    return img
+
 
 def halftone_dither(img):
-    '''Applies Haltone dithering using different sized circles
+    '''Applies Halftone dithering using different sized circles
 
     Algorithm is borrowed from https://github.com/GravO8/halftone
     '''
@@ -106,7 +133,12 @@ def read_img(
         ),
         interpolation=cv2.INTER_AREA)
 
-    if img_binarization_algo == 'floyd-steinberg':
+    if img_binarization_algo == 'atkinson':
+        logger.info('⏳ Applying Atkinson dithering to image...')
+        resized = atkinson_dither(resized)
+        logger.info('✅ Done.')
+        resized = resized > 127
+    elif img_binarization_algo == 'floyd-steinberg':
         logger.info('⏳ Applying Floyd-Steinberg dithering to image...')
         resized = floyd_steinberg_dither(resized)
         logger.info('✅ Done.')
