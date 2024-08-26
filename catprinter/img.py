@@ -23,7 +23,7 @@ def floyd_steinberg_dither(img):
             new_val = 255 if img[y][x] > 127 else 0
             err = img[y][x] - new_val
             img[y][x] = new_val
-            adjust_pixel(y, x + 1, err * 1/16)
+            adjust_pixel(y, x + 1, err * 7/16)
             adjust_pixel(y + 1, x - 1, err * 3/16)
             adjust_pixel(y + 1, x, err * 5/16)
             adjust_pixel(y + 1, x + 1, err * 1/16)
