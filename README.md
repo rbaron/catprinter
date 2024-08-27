@@ -29,10 +29,10 @@ prints an image on your cat thermal printer
 positional arguments:
   filename
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -l {debug,info,warn,error}, --log-level {debug,info,warn,error}
-  -b {mean-threshold,floyd-steinberg,halftone,none}, --img-binarization-algo {mean-threshold,floyd-steinberg,halftone,none}
+  -b {mean-threshold,floyd-steinberg,atkinson,halftone,none}, --img-binarization-algo {mean-threshold,floyd-steinberg,atkinson,halftone,none}
                         Which image binarization algorithm to use. If 'none'
                         is used, no binarization will be used. In this case
                         the image has to have a width of 384 px.
@@ -68,11 +68,23 @@ optional arguments:
 
 # Different Algorithms
 
-Mean Threshold:
-![Mean threshold](./media/grumpy_mean_threshold.png)
+**Mean Threshold:**
 
-Floyd Steinberg (default)
-![Floyd Steinberg](./media/grumpy_floydsteinberg.png)
+![Mean threshold](./media/grumpymeanthreshold.png)
 
-Halftone dithering
-![Halftone](./media/grumpy_halftone.png)
+
+**Floyd Steinberg (default):**
+
+![Floyd Steinberg](./media/grumpyfloydsteinbergexample.png)
+
+**Atkinson:**
+
+![Atkinson](./media/grumpyatkinsonexample.png)
+
+**Halftone dithering:**
+
+![Halftone](./media/grumpyhalftone.png)
+
+**None (image must be 384px wide):**
+
+![None](./media/grumpynone.png)
