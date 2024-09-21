@@ -36,7 +36,7 @@ def parse_args():
                           'the printer based on its advertised BLE services.'
                       ))
     args.add_argument('-e', '--energy', type=lambda h: int(h.removeprefix("0x"), 16),
-                      help="Thermal energy. Between 0x0000 (light) and 0xffff (darker)",
+                      help="Thermal energy. Between 0x0000 (light) and 0xffff (darker, default).",
                       default="0xffff")
     return args.parse_args()
 
