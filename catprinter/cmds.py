@@ -94,7 +94,25 @@ def cmd_set_energy(val):
         0,
         0xff,
     ])
-    b_arr[7] = chk_sum(b_arr, 6, 2)
+    b_arr[8] = chk_sum(b_arr, 6, 2)
+    return bs(b_arr)
+
+
+def cmd_apply_energy():
+    b_arr = bs(
+        [
+            81,
+            120,
+            -66,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0xff,
+        ]
+    )
+    b_arr[7] = chk_sum(b_arr, 6, 1)
     return bs(b_arr)
 
 
@@ -167,13 +185,12 @@ def cmd_print_row(img_row):
     return b_arr
 
 
-def cmds_print_img(img, dark_mode=False):
-
-    PRINTER_MODE = CMD_PRINT_TEXT if dark_mode else CMD_PRINT_IMG
-
+def cmds_print_img(img, energy: int = 0xffff):
     data = \
         CMD_GET_DEV_STATE + \
         CMD_SET_QUALITY_200_DPI + \
+        cmd_set_energy(energy) + \
+        cmd_apply_energy() + \
         CMD_LATTICE_START
     for row in img:
         data += cmd_print_row(row)
