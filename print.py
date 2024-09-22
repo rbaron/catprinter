@@ -35,9 +35,9 @@ def parse_args():
                           'If omitted, the the script will try to auto discover '
                           'the printer based on its advertised BLE services.'
                       ))
-    args.add_argument('-t', '--darker', action='store_true',
-                      help="Print the image in text mode. This leads to more contrast, \
-                          but slower speed.")
+    args.add_argument('-e', '--energy', type=lambda h: int(h.removeprefix("0x"), 16),
+                      help="Thermal energy. Between 0x0000 (light) and 0xffff (darker, default).",
+                      default="0xffff")
     return args.parse_args()
 
 
@@ -72,7 +72,7 @@ def main():
         return
 
     logger.info(f'✅ Read image: {bin_img.shape} (h, w) pixels')
-    data = cmds_print_img(bin_img, dark_mode=args.darker)
+    data = cmds_print_img(bin_img, energy=args.energy)
     logger.info(f'✅ Generated BLE commands: {len(data)} bytes')
 
     # Try to autodiscover a printer if --device is not specified.
