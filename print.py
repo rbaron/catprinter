@@ -32,12 +32,15 @@ def parse_args():
                           'The printer\'s Bluetooth Low Energy (BLE) address '
                           '(MAC address on Linux; UUID on macOS) '
                           'or advertisement name (e.g.: "GT01", "GB02", "GB03"). '
-                          'If omitted, the the script will try to auto discover '
+                          'If omitted, the script will try to auto discover '
                           'the printer based on its advertised BLE services.'
                       ))
     args.add_argument('-e', '--energy', type=lambda h: int(h.removeprefix("0x"), 16),
                       help="Thermal energy. Between 0x0000 (light) and 0xffff (darker, default).",
                       default="0xffff")
+    args.add_argument('--no-resize', action='store_true',
+                      help='Disable automatic image resizing')
+    
     return args.parse_args()
 
 
@@ -64,6 +67,7 @@ def main():
             args.filename,
             PRINT_WIDTH,
             args.img_binarization_algo,
+            no_resize=args.no_resize
         )
         if args.show_preview:
             show_preview(bin_img)

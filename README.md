@@ -19,7 +19,7 @@ $ pip install -r requirements.txt
 # Usage
 ```bash
 $ ./print.py --help
-usage: print.py [-h] [-l {debug,info,warn,error}] [-b {mean-threshold,floyd-steinberg,atkinson,halftone,none}] [-s] [-d DEVICE] [-e ENERGY]
+usage: print.py [-h] [-l {debug,info,warn,error}] [-b {mean-threshold,floyd-steinberg,atkinson,halftone,none}] [-s] [-d DEVICE] [-e ENERGY] [--no-resize]
                 filename
 
 prints an image on your cat thermal printer
@@ -40,6 +40,33 @@ options:
                         services.
   -e ENERGY, --energy ENERGY
                         Thermal energy. Between 0x0000 (light) and 0xffff (darker, default).
+  --no-resize           Disable automatic image resizing. Small images print as-is, 
+                        large images scale to width without changing height.
+```
+
+# New Features
+
+## Image Resize Control
+
+The `--no-resize` option provides more control over image printing:
+
+- By default, images are resized to match printer width
+- With `--no-resize`, small images print at original size
+- Large images are scaled to width while maintaining aspect ratio
+
+Example:
+
+```bash
+# Print without automatic resizing
+./print.py --no-resize test.png
+```
+
+## Printer Keep-Awake
+A keep-awake mechanism can be configured in the manager project to prevent printer sleep mode. This is typically managed externally and can be activated when running the server.
+
+```bash
+# Managed by parent project
+node server.js --keep-awake
 ```
 
 # Example

@@ -30,10 +30,10 @@ PRINTER_READY_NOTIFICATION = b"\x51\x78\xae\x01\x01\x00\x00\x00\xff"
 SCAN_TIMEOUT_S = 10
 
 # Wait time after sending each chunk of data through BLE.
-WAIT_AFTER_EACH_CHUNK_S = 0.02
+WAIT_AFTER_EACH_CHUNK_S = 0.2
 
 # Wait for printer done event timeout.
-WAIT_FOR_PRINTER_DONE_TIMEOUT = 30
+WAIT_FOR_PRINTER_DONE_TIMEOUT = 60
 
 
 async def scan(name: Optional[str], timeout: int):
