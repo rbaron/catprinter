@@ -38,6 +38,9 @@ def parse_args():
     args.add_argument('-e', '--energy', type=lambda h: int(h.removeprefix("0x"), 16),
                       help="Thermal energy. Between 0x0000 (light) and 0xffff (darker, default).",
                       default="0xffff")
+    args.add_argument('-S', '--speed', type=int, default=None,
+                      help="Print speed. Higher values print slower and darker. "
+                           "The official app uses 10 for the SC03h.")
     return args.parse_args()
 
 
@@ -72,7 +75,7 @@ def main():
         return
 
     logger.info(f'✅ Read image: {bin_img.shape} (h, w) pixels')
-    data = cmds_print_img(bin_img, energy=args.energy)
+    data = cmds_print_img(bin_img, energy=args.energy, speed=args.speed)
     logger.info(f'✅ Generated BLE commands: {len(data)} bytes')
 
     # Try to autodiscover a printer if --device is not specified.

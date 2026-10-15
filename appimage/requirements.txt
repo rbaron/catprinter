@@ -1,0 +1,4 @@
+# Bundled in the AppImage. Only pure Python packages, so the AppImage works
+# with whatever Python 3 version the system has.
+bleak==0.14.3
+dbus-next==0.2.3

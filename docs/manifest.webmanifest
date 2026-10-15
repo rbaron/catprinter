@@ -1,0 +1,44 @@
+{
+  "id": "./",
+  "name": "Impresora térmica",
+  "short_name": "Impresora",
+  "description": "Imprime imágenes, PDF y texto en impresoras térmicas Bluetooth (GT01, GB0x, SC03h y similares).",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fafafb",
+  "theme_color": "#e66100",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "share_target": {
+    "action": "./compartir",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        { "name": "archivos", "accept": ["image/*", "application/pdf", "text/*"] }
+      ]
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "image/png": [".png"],
+        "image/jpeg": [".jpg", ".jpeg"],
+        "image/gif": [".gif"],
+        "image/webp": [".webp"],
+        "image/bmp": [".bmp"],
+        "image/svg+xml": [".svg"],
+        "application/pdf": [".pdf"],
+        "text/plain": [".txt", ".md", ".csv", ".log"]
+      }
+    }
+  ]
+}

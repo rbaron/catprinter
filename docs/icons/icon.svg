@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffa348"/>
+      <stop offset="1" stop-color="#e66100"/>
+    </linearGradient>
+  </defs>
+  <!-- Papel saliendo de la ranura -->
+  <rect x="38" y="8" width="52" height="58" rx="3" fill="#ffffff" stroke="#c0bfbc" stroke-width="2"/>
+  <rect x="46" y="18" width="36" height="5" rx="2.5" fill="#5e5c64"/>
+  <rect x="46" y="29" width="26" height="5" rx="2.5" fill="#9a9996"/>
+  <rect x="46" y="40" width="32" height="5" rx="2.5" fill="#9a9996"/>
+  <!-- Orejas -->
+  <path d="M20 66 L28 32 L54 56 Z" fill="#e66100"/>
+  <path d="M27 60 L31 42 L45 55 Z" fill="#f66151"/>
+  <path d="M108 66 L100 32 L74 56 Z" fill="#e66100"/>
+  <path d="M101 60 L97 42 L83 55 Z" fill="#f66151"/>
+  <!-- Cuerpo -->
+  <rect x="14" y="50" width="100" height="68" rx="20" fill="url(#body)"/>
+  <rect x="32" y="55" width="64" height="7" rx="3.5" fill="#3d3846"/>
+  <!-- Cara -->
+  <circle cx="46" cy="84" r="6" fill="#241f31"/>
+  <circle cx="82" cy="84" r="6" fill="#241f31"/>
+  <circle cx="48" cy="82" r="2" fill="#ffffff"/>
+  <circle cx="84" cy="82" r="2" fill="#ffffff"/>
+  <path d="M59 94 h10 l-5 5 Z" fill="#f66151"/>
+  <path d="M64 99 q-5 6 -10 2 M64 99 q5 6 10 2" fill="none" stroke="#241f31" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M24 92 l16 2 M24 100 l16 -1 M104 92 l-16 2 M104 100 l-16 -1" stroke="#863e00" stroke-width="2" stroke-linecap="round"/>
+</svg>

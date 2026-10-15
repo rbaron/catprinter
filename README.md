@@ -20,7 +20,7 @@ $ pip install -r requirements.txt
 ```bash
 $ ./print.py --help
 usage: print.py [-h] [-l {debug,info,warn,error}] [-b {mean-threshold,floyd-steinberg,atkinson,halftone,none}] [-s] [-d DEVICE] [-e ENERGY]
-                filename
+                [-S SPEED] filename
 
 prints an image on your cat thermal printer
 
@@ -40,7 +40,63 @@ options:
                         services.
   -e ENERGY, --energy ENERGY
                         Thermal energy. Between 0x0000 (light) and 0xffff (darker, default).
+  -S SPEED, --speed SPEED
+                        Print speed. Higher values print slower and darker. The official app uses 10 for the SC03h.
 ```
+
+# Desktop app (AppImage)
+
+There is also a GTK 4 desktop app (in Spanish) in `catprinter_gui/`. It
+stays connected to the printer, shows its battery level and prints images,
+PDFs, office documents (through LibreOffice) and text files with a preview
+of the exact dots that will be printed.
+
+It runs on the system's Python and GTK, so on Debian/Ubuntu you need:
+
+```bash
+$ sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-adw-1 poppler-utils
+```
+
+Build the AppImage (about 1 MB) and run it:
+
+```bash
+$ ./appimage/build.sh
+$ ./dist/CatPrinter-*-x86_64.AppImage
+```
+
+From the app menu, "Integrar con Archivos y el menú de apps" (or
+`--instalar` on the command line) copies the AppImage to `~/.local/bin` and
+adds it to the application menu, to "Open With" and to the context menu of
+Files. For a top-level entry in that context menu, also install
+`python3-nautilus` and restart Files with `nautilus -q`.
+
+# Web app
+
+`docs/` contains a web app (in Spanish) that prints from the browser through
+Web Bluetooth, with the same processing and print settings as the desktop
+app. It is a PWA: it can be installed, works offline once loaded, appears in
+the Android share sheet and, when installed on the desktop, in "Open With".
+
+Publish it with GitHub Pages (Settings → Pages → Deploy from a branch →
+`main`, `/docs`). Web Bluetooth needs Chrome, Edge or Opera on Windows,
+macOS, Android or ChromeOS; on other browsers the page explains the
+alternatives. To try it locally, serve `docs/` over `http://localhost`.
+
+# Dual-mode printers (SC03h)
+
+Some printers, like the SC03h, also offer classic Bluetooth. BlueZ may then
+try to connect over classic Bluetooth and fail with
+`br-connection-profile-unavailable`. To fix it:
+
+- Don't pair the printer in the system's Bluetooth settings. If you did,
+  remove it there: these printers don't need pairing.
+- With BlueZ 5.80 or newer, set `Experimental = true` in the `[General]`
+  section of `/etc/bluetooth/main.conf` and run
+  `sudo systemctl restart bluetooth`. This lets catprinter ask BlueZ to use
+  Bluetooth Low Energy for the printer.
+
+If prints come out blank, charge the printer: with a low battery it feeds
+the paper but doesn't heat the print head.
 
 # Example
 ```bash

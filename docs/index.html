@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Impresora térmica</title>
+  <meta name="description" content="Imprime imágenes, PDF y texto en impresoras térmicas Bluetooth (GT01, GB0x, SC03h y similares) desde el navegador.">
+  <meta name="theme-color" content="#e66100">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <img class="topbar__icon" src="icons/icon.svg" alt="" width="32" height="32">
+    <div class="topbar__title">
+      <h1>Impresora térmica</h1>
+      <p class="topbar__status"><span class="dot" id="status-dot"></span><span id="status-text">Sin conectar</span></p>
+    </div>
+    <span class="battery" id="battery" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="21" y="10" width="2" height="4" rx="1" fill="currentColor"/><rect id="battery-level" x="4" y="9" width="14" height="6" rx="1" fill="currentColor"/></svg>
+      <span id="battery-text"></span>
+    </span>
+    <button class="button" id="install" type="button" hidden>Instalar</button>
+    <button class="button button--accent" id="connect" type="button">Conectar</button>
+  </header>
+
+  <div class="banner" id="banner" role="status" hidden></div>
+
+  <main class="app" id="app" hidden>
+    <section class="preview" id="preview" aria-label="Vista previa">
+      <div class="empty" id="empty">
+        <img src="icons/icon.svg" alt="" width="96" height="96">
+        <h2>Imprime lo que quieras</h2>
+        <p>Arrastra aquí imágenes, PDF o archivos de texto, pégalos o elígelos.</p>
+        <label class="button button--accent button--pill">
+          Abrir archivo…
+          <input type="file" id="file-input" multiple hidden
+                 accept="image/*,application/pdf,text/*,.md,.csv,.log,.json">
+        </label>
+      </div>
+      <div class="paper" id="paper" hidden></div>
+      <div class="spinner" id="spinner" hidden></div>
+    </section>
+
+    <aside class="settings" aria-label="Ajustes">
+      <div class="settings__scroll">
+        <section class="group" id="file-group" hidden>
+          <h2>Archivo</h2>
+          <div class="card">
+            <div class="row">
+              <div class="row__text"><span id="file-title"></span><small id="file-subtitle"></small></div>
+              <label class="icon-button" title="Añadir más archivos">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7 2h2v5h5v2H9v5H7V9H2V7h5z"/></svg>
+                <input type="file" id="add-input" multiple hidden
+                       accept="image/*,application/pdf,text/*,.md,.csv,.log,.json">
+              </label>
+              <button class="icon-button" id="clear" type="button" title="Quitar todo">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 1h4v1h4v2H2V2h4zM3 5h10l-1 10H4z"/></svg>
+              </button>
+            </div>
+            <label class="row" id="pages-row" hidden>
+              <span class="row__text">Páginas<small>Por ejemplo: 1-3, 5</small></span>
+              <input type="text" id="pages" inputmode="numeric" placeholder="Todas">
+            </label>
+          </div>
+        </section>
+
+        <section class="group">
+          <h2>Imagen</h2>
+          <div class="card">
+            <label class="row">
+              <span class="row__text">Modo<small>Fotos con tramado, documentos nítidos</small></span>
+              <select data-setting="mode">
+                <option value="auto">Automático</option>
+                <option value="photo">Foto (tramado)</option>
+                <option value="sharp">Texto y dibujos (nítido)</option>
+                <option value="atkinson">Suave (Atkinson)</option>
+              </select>
+            </label>
+            <label class="row">
+              <span class="row__text">Brillo</span>
+              <output data-for="brightness"></output>
+              <input type="range" min="-100" max="100" data-setting="brightness">
+            </label>
+            <label class="row">
+              <span class="row__text">Contraste</span>
+              <output data-for="contrast"></output>
+              <input type="range" min="-100" max="100" data-setting="contrast">
+            </label>
+            <label class="row">
+              <span class="row__text">Engrosar trazos<small>El texto fino sale más oscuro y legible</small></span>
+              <input type="checkbox" class="switch" data-setting="bold">
+            </label>
+            <label class="row">
+              <span class="row__text">Recortar márgenes blancos<small>Aprovecha todo el ancho del papel</small></span>
+              <input type="checkbox" class="switch" data-setting="crop">
+            </label>
+            <label class="row">
+              <span class="row__text">Girar 90°<small>Útil para imágenes y páginas horizontales</small></span>
+              <input type="checkbox" class="switch" data-setting="rotate">
+            </label>
+            <label class="row" id="text-size-row" hidden>
+              <span class="row__text">Tamaño de letra<small>Para archivos de texto</small></span>
+              <input type="number" min="12" max="60" data-setting="textSize">
+            </label>
+          </div>
+        </section>
+
+        <section class="group">
+          <h2>Impresión</h2>
+          <p class="group__hint">Si sale clarito, sube la concentración de a un nivel. Con poca batería puede imprimir en blanco.</p>
+          <div class="card">
+            <label class="row">
+              <span class="row__text">Concentración<small>4 = normal (como la app oficial)</small></span>
+              <output data-for="level"></output>
+              <input type="range" min="1" max="9" data-setting="level">
+            </label>
+            <label class="row">
+              <span class="row__text">Lentitud<small>Más lenta = más oscura</small></span>
+              <output data-for="speed"></output>
+              <input type="range" min="5" max="40" data-setting="speed">
+            </label>
+          </div>
+        </section>
+      </div>
+
+      <footer class="print-bar">
+        <p class="print-bar__length" id="length"></p>
+        <progress id="progress" max="1" value="0" hidden></progress>
+        <button class="button button--accent button--pill button--wide" id="print" type="button" disabled>Imprimir</button>
+      </footer>
+    </aside>
+  </main>
+
+  <main class="unsupported" id="unsupported" hidden>
+    <img src="icons/icon.svg" alt="" width="96" height="96">
+    <h2>Este navegador no puede usar la impresora</h2>
+    <p id="unsupported-reason">Para conectarse a la impresora hace falta Web Bluetooth, y este navegador no lo tiene.</p>
+    <h3>Alternativas</h3>
+    <ul>
+      <li><strong>Windows, macOS, Android y ChromeOS:</strong> abre esta página en Chrome, Edge u Opera.</li>
+      <li><strong>Linux:</strong> usa la <a href="https://github.com/TetradogOther/catprinter/releases">AppImage</a>, o Chrome con <code>chrome://flags/#enable-experimental-web-platform-features</code> activado.</li>
+      <li><strong>iPhone y iPad:</strong> ningún navegador de iOS tiene Web Bluetooth salvo Bluefy (gratis en la App Store); abre esta página en él.</li>
+      <li><strong>Línea de comandos:</strong> <code>print.py</code> del <a href="https://github.com/TetradogOther/catprinter">repositorio</a> funciona en Linux, macOS y Windows.</li>
+    </ul>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+</body>
+</html>

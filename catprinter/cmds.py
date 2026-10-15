@@ -23,6 +23,11 @@ CMD_GET_DEV_STATE = bs([
     81, 120, -93, 0, 1, 0, 0, 0, -1
 ])
 
+# Makes the printer apply the configured energy and speed.
+CMD_UPDATE_DEVICE = bs([81, 120, -87, 0, 1, 0, 0, 0, -1])
+
+CMD_GET_BATTERY = bs([81, 120, -70, 0, 1, 0, 0, 0, -1])
+
 CMD_SET_QUALITY_200_DPI = bs([81, 120, -92, 0, 1, 0, 50, -98, -1])
 
 CMD_GET_DEV_INFO = bs([81, 120, -88, 0, 1, 0, 0, 0, -1])
@@ -65,23 +70,10 @@ def chk_sum(b_arr, i, i2):
     return b2
 
 
-def cmd_feed_paper(how_much):
-    b_arr = bs([
-        81,
-        120,
-        -67,
-        0,
-        1,
-        0,
-        how_much & 0xff,
-        0,
-        0xff,
-    ])
-    b_arr[7] = chk_sum(b_arr, 6, 1)
-    return bs(b_arr)
-
-
 def cmd_set_energy(val):
+    '''Thermal energy, sent little-endian like the official app does. The
+    official app uses values between ~5000 and ~14000 depending on the model
+    and on the selected concentration.'''
     b_arr = bs([
         81,
         120,
@@ -89,8 +81,8 @@ def cmd_set_energy(val):
         0,
         2,
         0,
-        (val >> 8) & 0xff,
         val & 0xff,
+        (val >> 8) & 0xff,
         0,
         0xff,
     ])
@@ -98,20 +90,20 @@ def cmd_set_energy(val):
     return bs(b_arr)
 
 
-def cmd_apply_energy():
-    b_arr = bs(
-        [
-            81,
-            120,
-            -66,
-            0,
-            1,
-            0,
-            1,
-            0,
-            0xff,
-        ]
-    )
+def cmd_set_speed(val):
+    '''Print speed. Higher values print slower, which gives the thermal head
+    more time to heat up and results in darker prints.'''
+    b_arr = bs([
+        81,
+        120,
+        -67,
+        0,
+        1,
+        0,
+        val & 0xff,
+        0,
+        0xff,
+    ])
     b_arr[7] = chk_sum(b_arr, 6, 1)
     return bs(b_arr)
 
@@ -185,17 +177,33 @@ def cmd_print_row(img_row):
     return b_arr
 
 
-def cmds_print_img(img, energy: int = 0xffff):
+# The official app re-sends the speed every this many rows.
+SPEED_RESEND_ROWS = 200
+
+# Speed the official app sets before feeding the paper at the end.
+FEED_SPEED = 25
+
+
+def cmds_print_img(img, energy: int = 0xffff, speed: int = None, text_mode: bool = True):
+    '''Builds the commands to print img, a sequence of rows of PRINT_WIDTH
+    booleans (True = black). Follows the same sequence as the official app.
+    text_mode selects the printer's text mode (sharp) instead of image mode.'''
     data = \
         CMD_GET_DEV_STATE + \
         CMD_SET_QUALITY_200_DPI + \
         cmd_set_energy(energy) + \
-        cmd_apply_energy() + \
+        (CMD_PRINT_TEXT if text_mode else CMD_PRINT_IMG)
+    if speed is not None:
+        data += cmd_set_speed(speed)
+    data += \
+        CMD_UPDATE_DEVICE + \
         CMD_LATTICE_START
-    for row in img:
+    for i, row in enumerate(img):
+        if speed is not None and i and i % SPEED_RESEND_ROWS == 0:
+            data += cmd_set_speed(speed)
         data += cmd_print_row(row)
     data += \
-        cmd_feed_paper(25) + \
+        cmd_set_speed(FEED_SPEED) + \
         CMD_SET_PAPER + \
         CMD_SET_PAPER + \
         CMD_SET_PAPER + \
